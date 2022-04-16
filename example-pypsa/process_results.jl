@@ -10,7 +10,9 @@ using PyPSA2PowerSystems
 using PowerModels
 
 nc_filename = ARGS[1]
-mp_filename = first(splitext(nc_filename)) * ".m"
+nc_dir = dirname(nc_filename)
+base_name = first(splitext(basename(nc_filename)))
+mp_filename = joinpath(nc_dir, base_name * ".m")
 
 @info "processing PyPSA result" nc_filename
 out_path = PyPSA2PowerSystems.format_pypsa(nc_filename, cleanup = true)
@@ -19,10 +21,12 @@ sys = PyPSA2PowerSystems.System(out_path)
 pm_data = PowerModelsInterface.get_pm_data(sys)
 
 @info "writing MATPOWER file" mp_filename
-export_matpower("solved_network.m", pm_data)
+export_matpower(mp_filename, pm_data)
 
 tsd = joinpath(out_path, "timeseries")
-if !isempty(readir(tsd))
-    @info "writing timeseries files" tsd
-    cp(tsd, dirname(mp_filename))
-    cp(joinpath(out_path, "timeseries_pointers.json"), joinpath(dirname(mp_filename), "timeseries_pointers.json"))
+if !isempty(readdir(tsd))
+    new_tsd = mkpath(joinpath(nc_dir, base_name, "timeseries"))
+    @info "writing timeseries files" new_tsd
+    cp(tsd, new_tsd, force = true)
+    cp(joinpath(out_path, "timeseries_pointers.json"), joinpath(nc_dir, base_name, "timeseries_pointers.json"), force = true)
+end
