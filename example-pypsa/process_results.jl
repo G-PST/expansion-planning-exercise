@@ -8,6 +8,7 @@ using PowerSystems
 using PowerModelsInterface
 using PyPSA2PowerSystems
 using PowerModels
+include("matpower_m_to_mat.jl")
 
 nc_filename = ARGS[1]
 nc_dir = dirname(nc_filename)
@@ -22,6 +23,7 @@ pm_data = PowerModelsInterface.get_pm_data(sys)
 
 @info "writing MATPOWER file" mp_filename
 export_matpower(mp_filename, pm_data)
+convert_matpower(mp_filename)
 
 tsd = joinpath(out_path, "timeseries")
 if !isempty(readdir(tsd))
