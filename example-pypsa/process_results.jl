@@ -186,7 +186,7 @@ function get_dcline(data)
         push!(dcline, dcline_data["loss1"])
     end
     if length(dcline) > 0
-        permutedims(reshape(dcline, 17, length(gencost) ÷ 17))
+        permutedims(reshape(dcline, 17, length(dcline) ÷ 17))
     else
         permutedims(reshape(Float64[], 0, 0))
     end
