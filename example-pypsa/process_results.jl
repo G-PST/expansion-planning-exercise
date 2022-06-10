@@ -164,6 +164,8 @@ function get_dcline(data)
     indices = sort(parse.(Int, keys(data["dcline"])))
     # TODO: implement getting the data from dcline
     for i in indices
+        # TODO: this is not implemented.
+        # This code will error if this for loop is entered
         push!(dcline, dcline_data["f_bus"])
         push!(dcline, dcline_data["t_bus"])
         push!(dcline, dcline_data["br_status"])
